@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import SwapiService from '../../services/SwapiService';
+import ErrorIndicator from '../error-indicator';
 import Spinner from '../spinner';
 import './random-planet.css';
 
@@ -10,7 +11,8 @@ export default class RandomPlanet extends Component {
 
   state = {
     planet: {},
-    loading: true
+    loading: false,
+    error: false
   };
 
   constructor() {
@@ -18,34 +20,48 @@ export default class RandomPlanet extends Component {
     this.updatePlanet();
   }
 
-  async updatePlanet() {
-    const id = Math.floor(Math.random() * 19) + 2;
+  onLoadPlanet = planet => {
     this.setState(
       {
-        planet: await this.swapiService.getPlanet(id),
-        loading: false
-      }
-    );
+        planet,
+        loading: true
+      });
+  };
+
+  onError = () => {
+    this.setState({
+      error: true
+    });
+  };
+
+  async updatePlanet() {
+    const id = Math.floor(Math.random() * 1900) + 2;
+    this.swapiService.getPlanet(id)
+      .then(this.onLoadPlanet)
+      .catch(this.onError);
   }
 
   render() {
-    const {planet, loading } = this.state;
+    const {planet, loading, error} = this.state;
+
+    let content = loading ? <PlanetView planet={planet}/> : <Spinner/>;
+    content = error ? <ErrorIndicator/> : content;
 
     return (
       <div className="random-planet jumbotron rounded">
-        {loading ? <Spinner /> :  <PlanetView planet={planet} />}
+        {content}
       </div>
     );
   }
 }
 
-const PlanetView = ({ planet }) => {
-  const { id, name, population, rotationPeriod, diameter } = planet;
+const PlanetView = ({planet}) => {
+  const {id, name, population, rotationPeriod, diameter} = planet;
 
   return (
     <React.Fragment>
       <img className="planet-image"
-           src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`}/>
+           src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} alt=""/>
       <div>
         <h4>{name}</h4>
         <ul className="list-group list-group-flush">
