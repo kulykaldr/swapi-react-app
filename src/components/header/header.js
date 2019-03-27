@@ -7,7 +7,7 @@ const Header = () => {
     <div className="header d-flex">
       <h3>
         <a href="#">
-          Star DB
+          Swapi React App
         </a>
       </h3>
       <ul className="d-flex">
