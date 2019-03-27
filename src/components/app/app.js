@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
+import './app.css';
+
 import Header from '../header';
 import RandomPlanet from '../random-planet';
 import ErrorButton from '../error-button';
 import ErrorIndicator from '../error-indicator';
 import PeoplePage from '../people-page';
-
-import './app.css';
 
 export default class App extends Component {
 
