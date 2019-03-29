@@ -8,7 +8,7 @@ import ErrorButton from '../error-button';
 import SwapiService from "../../services/swapi-service";
 import ErrorBoundry from "../error-boundry";
 import ItemList from "../item-list";
-import ItemDetails from "../person-details";
+import ItemDetails, { Record } from "../item-details";
 import Row from "../row";
 
 export default class App extends Component {
@@ -45,17 +45,22 @@ export default class App extends Component {
     const peopleList = (
       <ItemList
         onItemSelected={this.onItemSelected}
-        getData={getAllPeople}
-        renderItem={item => `${item.name} (${item.gender}, ${item.birthYear})`}
-      />
+        getData={getAllPeople}>
+        { ({ name })  => <span>{name}</span>}
+      </ItemList>
     );
 
     const personDetails = (
       <ItemDetails
         itemId={this.state.selectedItem}
         getData={getPerson}
-        getImageUrl={getImagePerson}
-      />
+        getImageUrl={getImagePerson}>
+
+        <Record field="gender" label="Gender" />
+        <Record field="birthYear" label="Birth Year" />
+        <Record field="eyeColor" label="Eye Color" />
+
+      </ItemDetails>
     );
 
     return (
