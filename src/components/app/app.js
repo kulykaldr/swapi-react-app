@@ -4,65 +4,35 @@ import './app.css';
 
 import Header from '../header';
 import RandomPlanet from '../random-planet';
-import ErrorButton from '../error-button';
 import ErrorBoundry from "../error-boundry";
-import Row from "../row";
-import {
-  PersonList,
-  PlanetList,
-  StarshipList,
-  PersonDetails,
-  PlanetDetails,
-  StarshipDetails
-} from "../sw-components";
+import { SwapiServiceProvider } from "../swapi-service-context";
+import SwapiService from "../../services/swapi-service";
+import PeoplePage from "../pages/people-page";
+import PlanetsPage from "../pages/planets-page";
+import StarshipsPage from "../pages/starships-page";
 
 export default class App extends Component {
 
-  state = {
-    showRandomPlanet: true,
-    selectedItem: 6
-  };
-
-  toggleRandomPlanet = () => {
-    this.setState((state) => {
-      return {
-        showRandomPlanet: !state.showRandomPlanet
-      }
-    });
-  };
+  swapiService = new SwapiService();
 
   componentDidCatch() {
     this.setState({ hasError: true });
   }
 
-  onItemSelected = (selectedItem) => {
-    this.setState({ selectedItem });
-  };
-
   render() {
-
-    const { showRandomPlanet, selectedItem } = this.state;
-    const planet = showRandomPlanet ? <RandomPlanet/> : null;
-    const peopleList = <PersonList />;
-    const personDetails = <PersonDetails itemId={selectedItem}/>;
-
     return (
       <ErrorBoundry>
-        <div className="stardb-app">
-          <Header/>
-          {planet}
-          <div className="row mb2 button-row">
-            <button
-              className="toggle-planet btn btn-warning btn-lg"
-              onClick={this.toggleRandomPlanet}>
-              Toggle Random Planet
-            </button>
-            <ErrorButton/>
+        <SwapiServiceProvider value={this.swapiService}>
+          <div className="stardb-app">
+            <Header/>
+            <RandomPlanet/>
+
+            <PeoplePage />
+            <PlanetsPage />
+            <StarshipsPage />
+
           </div>
-
-          <Row left={peopleList} right={personDetails}/>
-
-        </div>
+        </SwapiServiceProvider>
       </ErrorBoundry>
     );
   }
