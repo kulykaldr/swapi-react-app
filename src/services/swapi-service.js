@@ -1,8 +1,9 @@
 export default class SwapiService {
-  _startUrl = 'https://swapi.co/api';
+  _baseUrl = 'https://swapi.co/api';
+  _baseImage = 'https://starwars-visualguide.com/assets/img';
 
   async getResource(url) {
-    const res = await fetch(`${this._startUrl}${url}`);
+    const res = await fetch(`${this._baseUrl}${url}`);
 
     if (!res.ok) {
       throw new Error(`Could not fetch ${url}, received ${res.status}`);
@@ -11,40 +12,52 @@ export default class SwapiService {
     return await res.json();
   }
 
-  async getAllPeople() {
+  getImagePerson = ({id}) => {
+    return `${this._baseImage}/characters/${id}.jpg`;
+  };
+
+  getImageStarship = ({id}) => {
+    return `${this._baseImage}/starships/${id}.jpg`;
+  };
+
+  getImagePlanet = ({id}) => {
+    return `${this._baseImage}/planets/${id}.jpg`;
+  };
+
+  getAllPeople = async () => {
     const res = await this.getResource('/people/');
     return res.results.map(this._transformPerson);
-  }
+  };
 
-  async getPerson(id) {
+  getPerson = async id => {
     const person = await this.getResource(`/people/${id}`);
     return this._transformPerson(person);
-  }
+  };
 
-  async getAllPlanets() {
+  getAllPlanets = async () => {
     const res = await this.getResource('/planets/');
     return res.results.map(this._transformPlanet);
-  }
+  };
 
-  async getPlanet(id) {
+  getPlanet = async id => {
     const planet = await this.getResource(`/planets/${id}`);
     return this._transformPlanet(planet);
-  }
+  };
 
-  async getAllStarships() {
+  getAllStarships = async () => {
     const res = await this.getResource('/starships/');
     return res.results.map(this._transformStarship);
-  }
+  };
 
-  async getStarship(id) {
+  getStarship = async id => {
     const starship = await this.getResource(`/starships/${id}`);
     return this._transformStarship(starship);
-  }
+  };
 
-  _getId(item) {
+  _getId = item => {
     const idRegexp = /\/(\d+)\/$/;
     return item.url.match(idRegexp)[1];
-  }
+  };
 
   _transformPlanet = planet => {
     return {
